@@ -1,62 +1,52 @@
-    /*
-     * Dependencias
-     */
-    var gulp = require('gulp'),
-        concat = require('gulp-concat'),
-        uglify = require('gulp-uglify');
+var gulp = require('gulp');
 
-    var handlebars = require('gulp-handlebars');
-    var wrap = require('gulp-wrap');
-    var declare = require('gulp-declare');
-    /*
-     * Configuración de las tareas 'demo'
-     */
+var EXPRESS_PORT = 4000;
+var EXPRESS_ROOT = __dirname;
+var LIVERELOAD_PORT = 35729;
 
-    var tinylr;
-    gulp.task('livereload', function() {
-        tinylr = require('tiny-lr')();
-        tinylr.listen(35729);
-    });
+// Let's make things more readable by
+// encapsulating each part's setup
+// in its own method
+function startExpress() {
 
+  var express = require('express');
+  var app = express();
+  app.use(require('connect-livereload')());
+  app.use(express.static(EXPRESS_ROOT));
+  app.listen(EXPRESS_PORT);
+}
 
-    gulp.task('watch', function() {
-        gulp.watch('*.html', notifyLiveReload);
-        gulp.watch('css/*.css', notifyLiveReload);
-    });
+// We'll need a reference to the tinylr
+// object to send notifications of file changes
+// further down
+var lr;
+function startLivereload() {
 
+  lr = require('tiny-lr')();
+  lr.listen(LIVERELOAD_PORT);
+}
 
-    gulp.task('express', function() {
-        var express = require('express');
-        var app = express();
-        app.use(require('connect-livereload')({ port: 4002 }));
-        app.use(express.static(__dirname));
-        app.listen(4000, '0.0.0.0');
-    });
+// Notifies livereload of changes detected
+// by `gulp.watch()` 
+function notifyLivereload(event) {
 
+  // `gulp.watch()` events provide an absolute path
+  // so we need to make it relative to the server root
+  var fileName = require('path').relative(EXPRESS_ROOT, event.path);
 
-    gulp.task('templates', function() {
-        gulp.src('src/templates/*.hbs')
-            .pipe(handlebars())
-            .pipe(wrap('Handlebars.template(<%= contents %>)'))
-            .pipe(declare({
-                namespace: 'MyApp.templates',
-                noRedeclare: true, // Avoid duplicate declarations 
-            }))
-            .pipe(concat('templates.js'))
-            .pipe(gulp.dest('build/js/'));
-    });
-
-    gulp.task('default', ['express', 'livereload', 'watch', 'templates'], function() {
-
-    });
-
-
-    function notifyLiveReload(event) {
-        var fileName = require('path').relative(__dirname, event.path);
-
-        tinylr.changed({
-            body: {
-                files: [fileName]
-            }
-        });
+  lr.changed({
+    body: {
+      files: [fileName]
     }
+  });
+}
+
+// Default task that will be run
+// when no parameter is provided
+// to gulp
+gulp.task('default', function () {
+
+  startExpress();
+  startLivereload();
+  gulp.watch('*.html', notifyLivereload);
+});

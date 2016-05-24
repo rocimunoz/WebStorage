@@ -1,0 +1,34 @@
+{
+  "name": "webstorage",
+  "version": "1.0.0",
+  "description": "Ejemplos almacenamiento cliente",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocimunoz/WebStorage.git"
+  },
+  "keywords": [
+    "storage"
+  ],
+  "author": "rocimunoz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rocimunoz/WebStorage/issues"
+  },
+  "homepage": "https://github.com/rocimunoz/WebStorage#readme",
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "connect-livereload": "^0.5.4",
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-declare": "^0.3.0",
+    "gulp-handlebars": "^4.0.0",
+    "gulp-uglify": "^1.2.0",
+    "gulp-wrap": "^0.13.0",
+    "tiny-lr": "^0.2.1"
+  }
+}

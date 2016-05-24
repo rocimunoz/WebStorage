@@ -1,0 +1,21 @@
+{
+  "name": "webstorage",
+  "description": "Ejemplos almacenamiento cliente",
+  "main": "main.js",
+  "authors": [
+    "rocimunoz"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "storage"
+  ],
+  "homepage": "https://github.com/rocimunoz/WebStorage",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

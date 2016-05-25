@@ -48,5 +48,7 @@ gulp.task('default', function () {
 
   startExpress();
   startLivereload();
+
+  
   gulp.watch('*.html', notifyLivereload);
 });

@@ -9,8 +9,23 @@
     <link href="css/simple-sidebar.css" rel="stylesheet" />
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="js/funciones.js"></script>
     <!-- IMPORTS -->
-    <link rel="import" id="localStorage" href="src/localStorage/index.html">
+    <script>
+    function handleLoad(e) {
+        console.log('Loaded import: ' + e.target.href);
+    }
+
+    function handleError(e) {
+        console.log('Error loading import: ' + e.target.href);
+    }
+    </script>
+    <link rel="import" id="importLocalStorage" href="src/localStorage/ejemploLocalStorage.html" onload="handleLoad(event)" onerror="handleError(event)">
+    <link rel="import" id="importSessionStorage" href="src/sessionStorage/ejemploSessionStorage.html" onload="handleLoad(event)" onerror="handleError(event)">
+    <link rel="import" id="importCache" href="src/cache/ejemploCache.html" onload="handleLoad(event)" onerror="handleError(event)">
+    <link rel="import" id="importWebSql" href="src/webSql/ejemploWebSql.html" onload="handleLoad(event)" onerror="handleError(event)">
+    <link rel="import" id="importIndexedDb" href="src/indexedDb/ejemploIndexedDb.html" onload="handleLoad(event)" onerror="handleError(event)">
+     <link rel="import" id="importFileSystem" href="src/fileSystem/ejemploFileSystem.html" onload="handleLoad(event)" onerror="handleError(event)">
     <!--
 <script src="js/handlebars-v3.0.3.js"></script>-->
 </head>
@@ -26,22 +41,22 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">Local Storage</a>
+                    <a id="localStorage" href="#">Local Storage</a>
                 </li>
                 <li>
-                    <a href="#">Session Storage</a>
+                    <a id="sessionStorage" href="#">Session Storage</a>
                 </li>
                 <li>
-                    <a href="#">Cache API</a>
+                    <a id="cache" href="#">Cache API</a>
                 </li>
                 <li>
-                    <a href="#">WebSQL</a>
+                    <a id="websql" href="#">WebSQL</a>
                 </li>
                 <li>
-                    <a href="#">IndexedDB</a>
+                    <a id="indexed" href="#">IndexedDB</a>
                 </li>
                 <li>
-                    <a href="#">File System API</a>
+                    <a id="fileSystem" href="#">File System API</a>
                 </li>
             </ul>
         </div>
@@ -52,11 +67,10 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- Almacenamiento Cliente -->
-                        <script>
+                       <div id="paginaImportada">
+                           
                         
-                        var doc = document.getElementById('localStorage').imort;
-                        alert(doc);
-                        </script>
+                       </div>
                     </div>
                 </div>
             </div>

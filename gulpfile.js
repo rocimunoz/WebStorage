@@ -51,4 +51,6 @@ gulp.task('default', function () {
 
   
   gulp.watch('*.html', notifyLivereload);
+  gulp.watch('src/webSql/*.html', notifyLivereload);
+  gulp.watch('src/localStorage/*.html', notifyLivereload);
 });

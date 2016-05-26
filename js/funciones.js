@@ -1,21 +1,20 @@
 $(document).ready(function() {
 
-//var docLocalStorage = "";
-//var thisDoc = document.currentScript.ownerDocument;
+    //var docLocalStorage = "";
+    //var thisDoc = document.currentScript.ownerDocument;
     $("#localStorage").on('click', function() {
-        importarHtml('importLocalStorage'); 
+        importarHtml('importLocalStorage');
 
-        $("#reload1").on('click', function() {
-           
-            alert("Boton con local storage");
+        var tabSeleccionada = localStorage.getItem("tab");
+        console.log(tabSeleccionada);
+        $('.nav-tabs').bind('click', function (e){
 
-        });
-
-        $("#reload2").on('click', function() {
-           
-            alert("boton sin local storage");
+            
+            localStorage.setItem("tab", e.target.id);
 
         });
+
+
 
 
     });
@@ -54,12 +53,12 @@ $(document).ready(function() {
         console.log($("#reload1"));
 
     });
- 
 
 
-$(function() {
-    
-});
+
+    $(function() {
+
+    });
 
 
 });
@@ -69,7 +68,7 @@ function importarHtml(idPage) {
 
     var divDerecho = document.querySelector('#paginaImportada');
     divDerecho.innerHTML = "";
-    var contentLocalStorage = document.querySelector('#'+ idPage).import;
+    var contentLocalStorage = document.querySelector('#' + idPage).import;
     var divLocalStorage = contentLocalStorage.querySelector("#x");
     var newNode = document.importNode(divLocalStorage, true);
     //divDerecho.appendChild(divLocalStorage.cloneNode(true));

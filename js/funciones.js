@@ -5,10 +5,16 @@ $(document).ready(function() {
     $("#localStorage").on('click', function() {
         importarHtml('importLocalStorage');
 
-        var tabSeleccionada = localStorage.getItem("tab");
-        console.log(tabSeleccionada);
-        $('.nav-tabs').bind('click', function (e){
+        var tabSeleccionada = 0;
+        if (localStorage.getItem("tab")!=null){
 
+            tabSeleccionada  = localStorage.getItem("tab");
+        }
+        
+        $('.nav-tabs >li').removeClass('active');
+        $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
+
+        $('.nav-tabs').bind('click', function (e){
             
             localStorage.setItem("tab", e.target.id);
 

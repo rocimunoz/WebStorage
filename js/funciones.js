@@ -52,7 +52,26 @@ $(document).ready(function() {
 
     $("#indexed").on('click', function() {
 
+        //Importo Htmls
         importarHtml('importIndexedDb');
+
+        //Cargo datos si los hay
+        leerBBDD();
+
+
+        $("#loadIndexed").on('click', function(e) {
+            //e.preventDefault();
+            var arrayPersona = $("#formPersona").serializeArray();
+
+            //Cargo BD
+            escribirBBDD(arrayPersona);
+
+
+        })
+
+
+
+
     });
 
     $("#websql").on('click', function() {
@@ -64,30 +83,13 @@ $(document).ready(function() {
     });
 
 
-    $("#reload3").on('click', function() {
-        console.log("llego");
-        console.log($("#reload1"));
 
-    });
-
-    $("#reload1").on('click', function() {
-        console.log("llego al 1");
-        console.log($("#reload1"));
-
-    });
-
-
-
-    $(function() {
-
-    });
 
 
 });
 
 
 function importarHtml(idPage) {
-
     var divDerecho = document.querySelector('#paginaImportada');
     divDerecho.innerHTML = "";
     var contentLocalStorage = document.querySelector('#' + idPage).import;
@@ -95,6 +97,83 @@ function importarHtml(idPage) {
     var newNode = document.importNode(divLocalStorage, true);
     //divDerecho.appendChild(divLocalStorage.cloneNode(true));
     divDerecho.appendChild(newNode);
+}
 
+
+function leerBBDD() {
+
+    // This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
+    var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+    // Open (or create) the database
+    var open = indexedDB.open("PersonasDB", 1);
+
+    // Create the schema
+    open.onupgradeneeded = function() {
+        var db = open.result;
+        var store = db.createObjectStore("PersonaStore", { keyPath: "id" });
+        var index = store.createIndex("email", ["email"]);
+    };
+
+    open.onsuccess = function(e) {
+        // Start a new transaction
+        var db = open.result;
+        var tx = db.transaction("PersonaStore", "readwrite");
+        var store = tx.objectStore("PersonaStore");
+        var index = store.index("email");
+
+        
+        store.openCursor().onsuccess = function(event) {
+            var cursor = event.target.result;
+            if (cursor) {
+                cursor.value.nombre.value;
+                cursor.value.apellido.value;
+                cursor.value.email.value;
+                cursor.continue();
+            } else {
+                alert("No more entries!");
+            }
+        };
+
+
+
+        // Close the db when the transaction is done
+        tx.oncomplete = function() {
+            db.close();
+        };
+    }
+
+}
+
+function escribirBBDD(arrayPersona) {
+
+    // This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
+    var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+    // Open (or create) the database
+    var open = indexedDB.open("PersonasDB", 1);
+
+    // Create the schema
+    open.onupgradeneeded = function() {
+        var db = open.result;
+        var store = db.createObjectStore("PersonaStore", { keyPath: "id" });
+        var index = store.createIndex("email", ["email"]);
+    };
+
+    open.onsuccess = function() {
+        // Start a new transaction
+        var db = open.result;
+        var tx = db.transaction("PersonaStore", "readwrite");
+        var store = tx.objectStore("PersonaStore");
+        var index = store.index("email");
+
+        // Add some data
+        store.put({ id: 1, nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+
+        // Close the db when the transaction is done
+        tx.oncomplete = function() {
+            db.close();
+        };
+    }
 
 }

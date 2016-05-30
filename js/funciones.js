@@ -57,6 +57,8 @@ $(document).ready(function() {
 
         //Cargo datos si los hay
         leerBBDD();
+        
+
 
 
         $("#loadIndexed").on('click', function(e) {
@@ -102,6 +104,8 @@ function importarHtml(idPage) {
 
 function leerBBDD() {
 
+    var personas = [];
+
     // This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
     var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 
@@ -126,13 +130,20 @@ function leerBBDD() {
         store.openCursor().onsuccess = function(event) {
             var cursor = event.target.result;
             if (cursor) {
-                cursor.value.nombre.value;
-                cursor.value.apellido.value;
-                cursor.value.email.value;
+                //cursor.value.nombre.value;
+                //cursor.value.apellido.value;
+                //cursor.value.email.value;
+                personas.push(cursor.value);
                 cursor.continue();
             } else {
-                alert("No more entries!");
+                console.log("fin del cursor");
             }
+
+            $.each(personas, function () {
+
+            $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
+                
+        });
         };
 
 
@@ -141,7 +152,11 @@ function leerBBDD() {
         tx.oncomplete = function() {
             db.close();
         };
+
+        
     }
+
+    
 
 }
 

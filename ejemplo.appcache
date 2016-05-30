@@ -1,0 +1,8 @@
+CACHE MANIFEST
+#v0.0.1 change this to force update
+
+CACHE:
+index.html
+
+NETWORK:
+*

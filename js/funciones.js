@@ -18,10 +18,6 @@ $(document).ready(function() {
             localStorage.setItem("tabLocal", e.target.id);
 
         });
-
-
-
-
     });
 
 
@@ -39,15 +35,39 @@ $(document).ready(function() {
         $('.nav-tabs').bind('click', function(e) {
 
             sessionStorage.setItem("tabSession", e.target.id);
-
         });
-
-
-
     });
 
     $("#cache").on('click', function() {
         importarHtml('importCache');
+
+        var appCache = window.applicationCache;
+        appCache.update();
+        console.log(appCache);
+        switch (appCache.status) {
+            case appCache.UNCACHED: // UNCACHED == 0
+                return 'UNCACHED';
+                break;
+            case appCache.IDLE: // IDLE == 1
+                return 'IDLE';
+                break;
+            case appCache.CHECKING: // CHECKING == 2
+                return 'CHECKING';
+                break;
+            case appCache.DOWNLOADING: // DOWNLOADING == 3
+                return 'DOWNLOADING';
+                break;
+            case appCache.UPDATEREADY: // UPDATEREADY == 4
+                return 'UPDATEREADY';
+                break;
+            case appCache.OBSOLETE: // OBSOLETE == 5
+                return 'OBSOLETE';
+                break;
+            default:
+                return 'UKNOWN CACHE STATUS';
+                break;
+        };
+
     });
 
     $("#indexed").on('click', function() {
@@ -57,23 +77,19 @@ $(document).ready(function() {
 
         //Cargo datos si los hay
         leerBBDD();
-        
-
-
 
         $("#loadIndexed").on('click', function(e) {
-            //e.preventDefault();
+            e.preventDefault();
             var arrayPersona = $("#formPersona").serializeArray();
 
             //Cargo BD
             escribirBBDD(arrayPersona);
 
-
+            //Limpio la tabla 
+            $("#tBodyPersonas").children().remove();
+            //Recargo la lista
+            leerBBDD();
         })
-
-
-
-
     });
 
     $("#websql").on('click', function() {
@@ -83,11 +99,6 @@ $(document).ready(function() {
     $("#fileSystem").on('click', function() {
         importarHtml('importFileSystem');
     });
-
-
-
-
-
 });
 
 
@@ -100,7 +111,6 @@ function importarHtml(idPage) {
     //divDerecho.appendChild(divLocalStorage.cloneNode(true));
     divDerecho.appendChild(newNode);
 }
-
 
 function leerBBDD() {
 
@@ -126,7 +136,7 @@ function leerBBDD() {
         var store = tx.objectStore("PersonaStore");
         var index = store.index("email");
 
-        
+
         store.openCursor().onsuccess = function(event) {
             var cursor = event.target.result;
             if (cursor) {
@@ -139,11 +149,11 @@ function leerBBDD() {
                 console.log("fin del cursor");
             }
 
-            $.each(personas, function () {
+            $.each(personas, function() {
 
-            $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
-                
-        });
+                $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
+
+            });
         };
 
 
@@ -153,11 +163,8 @@ function leerBBDD() {
             db.close();
         };
 
-        
+
     }
-
-    
-
 }
 
 function escribirBBDD(arrayPersona) {
@@ -171,7 +178,7 @@ function escribirBBDD(arrayPersona) {
     // Create the schema
     open.onupgradeneeded = function() {
         var db = open.result;
-        var store = db.createObjectStore("PersonaStore", { keyPath: "id" });
+        var store = db.createObjectStore("PersonaStore", { keyPath: "id", autoIncrement: true });
         var index = store.createIndex("email", ["email"]);
     };
 
@@ -183,12 +190,11 @@ function escribirBBDD(arrayPersona) {
         var index = store.index("email");
 
         // Add some data
-        store.put({ id: 1, nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+        store.put({ nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
 
         // Close the db when the transaction is done
         tx.oncomplete = function() {
             db.close();
         };
     }
-
 }

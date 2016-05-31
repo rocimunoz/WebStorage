@@ -1,5 +1,11 @@
 $(document).ready(function() {
 
+    var cadenaLogs = [];
+
+
+    eventosCache(cadenaLogs);
+
+
     //var docLocalStorage = "";
     //var thisDoc = document.currentScript.ownerDocument;
     $("#localStorage").on('click', function() {
@@ -41,9 +47,14 @@ $(document).ready(function() {
     $("#cache").on('click', function() {
         importarHtml('importCache');
 
-        var appCache = window.applicationCache;
 
-        appCache.addEventListener('cached', handleCacheEvent, false);
+        //Cargo los eventos de cache a la pagina
+        $.each(cadenaLogs, function(index, value) {
+
+            $("#tBodyLogs").append('<tr><td>' + value + '</td>/tr>');
+
+        });
+
 
     });
 
@@ -176,6 +187,78 @@ function escribirBBDD(arrayPersona) {
     }
 }
 
-function handleCacheEvent(e) {
-  console.log("handleCacheEvent");
+
+function eventosCache(cadenaLogs) {
+
+
+
+    var appCache = window.applicationCache;
+
+    $(appCache).bind("checking", function(event) {
+        console.log("Checking for manifest");
+        cadenaLogs.push("Checking for manifest");
+    });
+
+    $(appCache).bind("noupdate", function(event) {
+        console.log("No cache updates");
+        cadenaLogs.push("No hay nada que actualizar en la cache");
+    });
+
+    $(appCache).bind("downloading", function(event) {
+        console.log("Downloading cache");
+        cadenaLogs.push("Descargando cache");
+        // Get the total number of files in our manifest.
+        //getTotalFiles();
+    });
+    // This gets fired for every file that is downloaded by the
+    // cache update.
+    $(appCache).bind("progress", function(event) {
+        console.log("File downloaded");
+        cadenaLogs.push("Fichero descargado");
+        // Show the download progress.
+        //displayProgress();
+    });
+
+    $(appCache).bind("cached",
+        function(event) {
+            console.log("All files downloaded");
+            cadenaLogs.push("Todos los ficheros descargados");
+        }
+    );
+
+    $(appCache).bind("updateready",
+        function(event) {
+            console.log("New cache available");
+            cadenaLogs.push("Nueva cache disponible");
+            // Swap out the old cache.
+            //appCache.swapCache();
+        }
+    );
+
+    $(appCache).bind("obsolete",
+        function(event) {
+            console.log("Manifest cannot be found");
+            cadenaLogs.push("No se puede encontrar el manifest");
+        }
+    );
+    // This gets fired when an error occurs
+    $(appCache).bind("error",
+        function(event) {
+            console.log("An error occurred");
+            cadenaLogs.push("error");
+        }
+    );
+
+    /*
+        $( window ).bind(
+                "online offline",
+                function( event ){
+                    // Update the online status.
+                    appStatus.text( navigator.onLine ? "Online" : "Offline" );
+                }
+            );
+            // Set the initial status of the application.
+            appStatus.text( navigator.onLine ? "Online" : "Offline" );
+    */
+
 }

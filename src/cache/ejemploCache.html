@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <!--<html lang="es" manifest="../../ejemplo.appcache">-->
 <html lang="es">
+
 <head>
-  
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../../css/simple-sidebar.css" rel="stylesheet" />
     <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
     <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    
-    </head>
+</head>
 
 <body>
-  <div id="x">
-  <h2>Ejemplo Cache API</h2>
-  Aunque no lo ves, tu navegador esta cacheando los siguientes ficheros
-
-
-  </div>
+    <div id="x">
+        <h2>Ejemplo Cache API</h2> Aunque no lo ves, tu navegador esta cacheando algunos ficheros
+        <div id="logCache">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Log</th>
+                       
+                    </tr>
+                </thead>
+                <tbody id="tBodyLogs">
+                </tbody>
+            </table>
+        </div>
+    </div>

@@ -178,7 +178,7 @@ function escribirBBDD(arrayPersona) {
         var index = store.index("email");
 
         // Add some data
-        store.put({ nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+        store.put({id:'', nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
 
         // Close the db when the transaction is done
         tx.oncomplete = function() {

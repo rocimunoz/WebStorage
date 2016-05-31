@@ -86,6 +86,22 @@ $(document).ready(function() {
 
     $("#fileSystem").on('click', function() {
         importarHtml('importFileSystem');
+
+
+        window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+
+        window.requestFileSystem(window.TEMPORARY, 20 * 1024 * 1024 /*20MB*/ , onInitFs, errorHandler);
+
+
+        $("#canciones").change(function() {
+            console.log("subimos una cancion")
+                //grab the first image in the fileList
+                //in this example we are only loading one file.
+            console.log(this.files[0].size);
+            cargarCancion(this.files[0]);
+
+        });
+
     });
 });
 
@@ -99,6 +115,10 @@ function importarHtml(idPage) {
     //divDerecho.appendChild(divLocalStorage.cloneNode(true));
     divDerecho.appendChild(newNode);
 }
+
+/**
++++++++++++++++++++++++++ INDEXED DB +++++++++++++++++++++++++++++++++
+*/
 
 function leerBBDD() {
 
@@ -178,7 +198,7 @@ function escribirBBDD(arrayPersona) {
         var index = store.index("email");
 
         // Add some data
-        store.put({id:'', nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+        store.put({ id: '', nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
 
         // Close the db when the transaction is done
         tx.oncomplete = function() {
@@ -261,4 +281,57 @@ function eventosCache(cadenaLogs) {
             appStatus.text( navigator.onLine ? "Online" : "Offline" );
     */
 
+}
+
+/**
+ ++++++++++++++++++++++++++   FILE SYSTEM API +++++++++++++++++++++++++++
+*/
+
+function leerCanciones(){
+
+
+}
+
+function cargarCancion(file) {
+
+    var reader = new FileReader();
+    reader.onload = function(event) {
+        the_url = event.target.result;
+        $("#tBodyCanciones").append("<tr><td><audio src='" + the_url + "' preload=auto controls></audio></td></tr>");
+    }
+    
+    reader.readAsDataURL(file);
+
+}
+
+
+function onInitFs(fs) {
+    console.log('Opened file system: ' + fs.name);
+}
+
+function errorHandler(e) {
+    var msg = '';
+
+    switch (e.code) {
+        case FileError.QUOTA_EXCEEDED_ERR:
+            msg = 'QUOTA_EXCEEDED_ERR';
+            break;
+        case FileError.NOT_FOUND_ERR:
+            msg = 'NOT_FOUND_ERR';
+            break;
+        case FileError.SECURITY_ERR:
+            msg = 'SECURITY_ERR';
+            break;
+        case FileError.INVALID_MODIFICATION_ERR:
+            msg = 'INVALID_MODIFICATION_ERR';
+            break;
+        case FileError.INVALID_STATE_ERR:
+            msg = 'INVALID_STATE_ERR';
+            break;
+        default:
+            msg = 'Unknown Error';
+            break;
+    };
+
+    console.log('Error: ' + msg);
 }

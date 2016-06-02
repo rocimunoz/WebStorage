@@ -14,27 +14,20 @@
     <script>
     function handleLoad(e) {
         console.log('Loaded import: ' + e.target.href);
-
-        $("#reload1").on('click', function() {
-            console.log("llego al 1");
-            console.log($("#reload1"));
-
-        });
-
     }
 
     function handleError(e) {
         console.log('Error loading import: ' + e.target.href);
     }
     </script>
+    <link rel="import" id="importNavigator" href="src/navigator/ejemploNavigator.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importLocalStorage" href="src/localStorage/ejemploLocalStorage.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importSessionStorage" href="src/sessionStorage/ejemploSessionStorage.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importCache" href="src/cache/ejemploCache.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importWebSql" href="src/webSql/ejemploWebSql.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importIndexedDb" href="src/indexedDb/ejemploIndexedDb.html" onload="handleLoad(event)" onerror="handleError(event)">
     <link rel="import" id="importFileSystem" href="src/fileSystem/ejemploFileSystem.html" onload="handleLoad(event)" onerror="handleError(event)">
-    <!--
-<script src="js/handlebars-v3.0.3.js"></script>-->
+   
 </head>
 
 <body>
@@ -46,6 +39,9 @@
                     <a href="#">
                         Almacenamiento Cliente
                     </a>
+                </li>
+                <li>
+                    <a id="navigator" href="#">DOM Navigator</a>
                 </li>
                 <li>
                     <a id="localStorage" href="#">Local Storage</a>

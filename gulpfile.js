@@ -55,6 +55,7 @@ gulp.task('default', function () {
   gulp.watch('src/localStorage/*.html', notifyLivereload);
   gulp.watch('src/sessionStorage/*.html', notifyLivereload);
   gulp.watch('src/indexedDb/*.html', notifyLivereload);
+  gulp.watch('src/navigator/*.html', notifyLivereload);
   gulp.watch('js/*.js', notifyLivereload);
 
 });

@@ -1,13 +1,19 @@
 $(document).ready(function() {
 
-    var cadenaLogs = [];
+var cadenaLogs = [];
+
+eventosCache(cadenaLogs);
+    
+
+/********************** EVENTOS IMPORT ***************************************/  
+    
+    $("#navigator").on('click', function() {
+        importarHtml('importNavigator');
+
+        
+    });
 
 
-    eventosCache(cadenaLogs);
-
-
-    //var docLocalStorage = "";
-    //var thisDoc = document.currentScript.ownerDocument;
     $("#localStorage").on('click', function() {
         importarHtml('importLocalStorage');
 
@@ -18,6 +24,8 @@ $(document).ready(function() {
 
         $('.nav-tabs >li').removeClass('active');
         $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
+        var pestana = $("#"+tabSeleccionada).href;
+        $("#"+pestana).addClass("active");
 
         $('.nav-tabs').bind('click', function(e) {
 
@@ -37,6 +45,8 @@ $(document).ready(function() {
 
         $('.nav-tabs >li').removeClass('active');
         $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
+        var pestana = $("#"+tabSeleccionada).href;
+        $("#"+pestana).addClass("active");
 
         $('.nav-tabs').bind('click', function(e) {
 
@@ -54,8 +64,6 @@ $(document).ready(function() {
             $("#tBodyLogs").append('<tr><td>' + value + '</td>/tr>');
 
         });
-
-
     });
 
     $("#indexed").on('click', function() {
@@ -116,9 +124,7 @@ function importarHtml(idPage) {
     divDerecho.appendChild(newNode);
 }
 
-/**
-+++++++++++++++++++++++++ INDEXED DB +++++++++++++++++++++++++++++++++
-*/
+/*********************  EVENTOS INDEXED DB **********************************/
 
 function leerBBDD() {
 
@@ -208,6 +214,9 @@ function escribirBBDD(arrayPersona) {
 }
 
 
+/********************** EVENTOS CACHE **********************************/
+
+
 function eventosCache(cadenaLogs) {
 
 
@@ -227,44 +236,37 @@ function eventosCache(cadenaLogs) {
     $(appCache).bind("downloading", function(event) {
         console.log("Downloading cache");
         cadenaLogs.push("Descargando cache");
-        // Get the total number of files in our manifest.
-        //getTotalFiles();
+        
     });
-    // This gets fired for every file that is downloaded by the
-    // cache update.
+    
     $(appCache).bind("progress", function(event) {
-        console.log("File downloaded");
-        cadenaLogs.push("Fichero descargado");
-        // Show the download progress.
-        //displayProgress();
+        console.log("Se esta descargando el fichero");
+        cadenaLogs.push("Se esta descargando el fichero");
+       
     });
 
-    $(appCache).bind("cached",
-        function(event) {
-            console.log("All files downloaded");
+    $(appCache).bind("cached",function(event) {
+            console.log("Todos los ficheros descargados");
             cadenaLogs.push("Todos los ficheros descargados");
         }
     );
 
-    $(appCache).bind("updateready",
-        function(event) {
+    $(appCache).bind("updateready",function(event) {
             console.log("New cache available");
             cadenaLogs.push("Nueva cache disponible");
-            // Swap out the old cache.
-            //appCache.swapCache();
         }
     );
 
     $(appCache).bind("obsolete",
         function(event) {
-            console.log("Manifest cannot be found");
+            console.log("No se puede encontrar el manifest");
             cadenaLogs.push("No se puede encontrar el manifest");
         }
     );
     // This gets fired when an error occurs
     $(appCache).bind("error",
         function(event) {
-            console.log("An error occurred");
+            console.log("Se ha producido un error");
             cadenaLogs.push("error");
         }
     );
@@ -283,9 +285,10 @@ function eventosCache(cadenaLogs) {
 
 }
 
-/**
- ++++++++++++++++++++++++++   FILE SYSTEM API +++++++++++++++++++++++++++
-*/
+
+
+
+/*******************  EVENTOS FILE SYSTEM API *********************************/
 
 function leerCanciones(){
 
@@ -301,7 +304,6 @@ function cargarCancion(file) {
     }
     
     reader.readAsDataURL(file);
-
 }
 
 

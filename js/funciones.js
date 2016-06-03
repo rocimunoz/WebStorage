@@ -1,116 +1,148 @@
 $(document).ready(function() {
 
-var cadenaLogs = [];
+    var cadenaLogs = [];
 
-eventosCache(cadenaLogs);
-    
+    eventosCache(cadenaLogs);
 
-/********************** EVENTOS IMPORT ***************************************/  
-    
+
+    /********************** EVENTOS IMPORT ***************************************/
+
     $("#navigator").on('click', function() {
-        importarHtml('importNavigator');
+            importarHtml('importNavigator');
+
+            if (window.navigator.onLine) {
+                $("#estado").empty();
+                $("#estado").append("Estado: Online");
+
+            } else if (window.navigator.offLine) {
+                $("#estado").empty();
+                $("#estado").append("Estado: Offline");
+            }
+
+            $("#version").empty();
+            $("#version").append("Version: " + window.navigator.appVersion);
+
+            $("#idioma").empty();
+            $("#idioma").append("Idioma: " + window.navigator.language);
+
+            
+
+            $("#plataforma").empty();
+            $("#plataforma").append("Plataforma: " + window.navigator.platform);
+
+            
+
+            
+
 
         
+
     });
 
 
-    $("#localStorage").on('click', function() {
-        importarHtml('importLocalStorage');
+$("#localStorage").on('click', function() {
+    importarHtml('importLocalStorage');
 
-        var tabSeleccionada = 0;
-        if (localStorage.getItem("tabLocal") != null) {
-            tabSeleccionada = localStorage.getItem("tabLocal");
-        }
+    var tabSeleccionada = 0;
+    if (localStorage.getItem("tabLocal") != null) {
+        tabSeleccionada = localStorage.getItem("tabLocal");
+    }
 
-        $('.nav-tabs >li').removeClass('active');
-        $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
-        var pestana = $("#"+tabSeleccionada).href;
-        $("#"+pestana).addClass("active");
+    $('.nav-tabs >li').removeClass('active');
+    $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
+    
 
-        $('.nav-tabs').bind('click', function(e) {
 
-            localStorage.setItem("tabLocal", e.target.id);
+    var pestana = $("#" + tabSeleccionada).attr("href");
+    
+    $(".tab-pane").removeClass("active");
+    $(pestana).addClass("active");
 
-        });
+
+    $('.nav-tabs').bind('click', function(e) {
+
+        localStorage.setItem("tabLocal", e.target.id);
+
     });
+});
 
 
-    $("#sessionStorage").on('click', function() {
-        importarHtml('importSessionStorage');
+$("#sessionStorage").on('click', function() {
+    importarHtml('importSessionStorage');
 
-        var tabSeleccionada = 0;
-        if (sessionStorage.getItem("tabSession") != null) {
-            tabSeleccionada = sessionStorage.getItem("tabSession");
-        }
+    var tabSeleccionada = 0;
+    if (sessionStorage.getItem("tabSession") != null) {
+        tabSeleccionada = sessionStorage.getItem("tabSession");
+    }
 
-        $('.nav-tabs >li').removeClass('active');
-        $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
-        var pestana = $("#"+tabSeleccionada).href;
-        $("#"+pestana).addClass("active");
+    $('.nav-tabs >li').removeClass('active');
+    $('.nav-tabs >li').eq(tabSeleccionada).addClass("active");
+    var pestana = $("#" + tabSeleccionada).href;
+    $("#" + pestana).addClass("active");
 
-        $('.nav-tabs').bind('click', function(e) {
+    $('.nav-tabs').bind('click', function(e) {
 
-            sessionStorage.setItem("tabSession", e.target.id);
-        });
+        sessionStorage.setItem("tabSession", e.target.id);
     });
+});
 
-    $("#cache").on('click', function() {
-        importarHtml('importCache');
+$("#cache").on('click', function() {
+    importarHtml('importCache');
 
 
-        //Cargo los eventos de cache a la pagina
-        $.each(cadenaLogs, function(index, value) {
+    //Cargo los eventos de cache a la pagina
+    $.each(cadenaLogs, function(index, value) {
 
-            $("#tBodyLogs").append('<tr><td>' + value + '</td>/tr>');
+        $("#tBodyLogs").append('<tr><td>' + value + '</td>/tr>');
 
-        });
     });
+});
 
-    $("#indexed").on('click', function() {
+$("#indexed").on('click', function() {
 
-        //Importo Htmls
-        importarHtml('importIndexedDb');
+    //Importo Htmls
+    importarHtml('importIndexedDb');
 
-        //Cargo datos si los hay
+    //Cargo datos si los hay
+    leerBBDD();
+
+    $("#loadIndexed").on('click', function(e) {
+        e.preventDefault();
+        var arrayPersona = $("#formPersona").serializeArray();
+
+        //Cargo BD
+        escribirBBDD(arrayPersona);
+
+        //Limpio la tabla 
+        $("#tBodyPersonas").children().remove();
+        //Recargo la lista
         leerBBDD();
+    })
+});
 
-        $("#loadIndexed").on('click', function(e) {
-            e.preventDefault();
-            var arrayPersona = $("#formPersona").serializeArray();
+$("#websql").on('click', function() {
+    importarHtml('importWebSql');
+});
 
-            //Cargo BD
-            escribirBBDD(arrayPersona);
-
-            //Limpio la tabla 
-            $("#tBodyPersonas").children().remove();
-            //Recargo la lista
-            leerBBDD();
-        })
-    });
-
-    $("#websql").on('click', function() {
-        importarHtml('importWebSql');
-    });
-
-    $("#fileSystem").on('click', function() {
-        importarHtml('importFileSystem');
+$("#fileSystem").on('click', function() {
+    importarHtml('importFileSystem');
 
 
-        window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
-        window.requestFileSystem(window.TEMPORARY, 20 * 1024 * 1024 /*20MB*/ , onInitFs, errorHandler);
+    window.requestFileSystem(window.TEMPORARY, 20 * 1024 * 1024 /*20MB*/ , onInitFs, errorHandler);
 
 
-        $("#canciones").change(function() {
-            console.log("subimos una cancion")
-                //grab the first image in the fileList
-                //in this example we are only loading one file.
-            console.log(this.files[0].size);
-            cargarCancion(this.files[0]);
-
-        });
+    $("#canciones").change(function() {
+        console.log("subimos una cancion")
+            //grab the first image in the fileList
+            //in this example we are only loading one file.
+        console.log(this.files[0].size);
+        cargarCancion(this.files[0]);
 
     });
+
+});
 });
 
 
@@ -162,11 +194,11 @@ function leerBBDD() {
             } else {
                 console.log("fin del cursor");
                 console.log("tam: " + personas.length);
-            $.each(personas, function() {
+                $.each(personas, function() {
 
-                $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
-
-            });
+                    $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
+                    
+                });
             }
 
 
@@ -197,7 +229,7 @@ function escribirBBDD(arrayPersona) {
         var store = db.createObjectStore("PersonaStore", { keyPath: "id", autoIncrement: true });
         var index = store.createIndex("email", ["email"]);
 
-       
+
 
     };
 
@@ -208,13 +240,12 @@ function escribirBBDD(arrayPersona) {
         var store = tx.objectStore("PersonaStore");
         var index = store.index("email");
 
-       
+
         var autoIncrement = store.autoIncrement;
         console.log(autoIncrement);
-        if (autoIncrement){
-            store.put({ nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });    
-        }
-        else{
+        if (autoIncrement) {
+            store.put({ nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+        } else {
 
             /*
             var myIndex = store.index('email');
@@ -226,14 +257,15 @@ function escribirBBDD(arrayPersona) {
             }
             */
             var tam = $("#tBodyPersonas > tr").length;
-            store.put({id: tam+1,  nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] }); 
+            var idChapucero = Math.floor((Math.random() * 10) + 1);
+            store.put({ id: idChapucero, nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
 
-            
-            
+
+
 
         }
-        
-        
+
+
         // Close the db when the transaction is done
         tx.oncomplete = function() {
             db.close();
@@ -264,26 +296,24 @@ function eventosCache(cadenaLogs) {
     $(appCache).bind("downloading", function(event) {
         console.log("Downloading cache");
         cadenaLogs.push("Descargando cache");
-        
+
     });
-    
+
     $(appCache).bind("progress", function(event) {
         console.log("Se esta descargando el fichero");
         cadenaLogs.push("Se esta descargando el fichero");
-       
+
     });
 
-    $(appCache).bind("cached",function(event) {
-            console.log("Todos los ficheros descargados");
-            cadenaLogs.push("Todos los ficheros descargados");
-        }
-    );
+    $(appCache).bind("cached", function(event) {
+        console.log("Todos los ficheros descargados");
+        cadenaLogs.push("Todos los ficheros descargados");
+    });
 
-    $(appCache).bind("updateready",function(event) {
-            console.log("New cache available");
-            cadenaLogs.push("Nueva cache disponible");
-        }
-    );
+    $(appCache).bind("updateready", function(event) {
+        console.log("New cache available");
+        cadenaLogs.push("Nueva cache disponible");
+    });
 
     $(appCache).bind("obsolete",
         function(event) {
@@ -318,7 +348,7 @@ function eventosCache(cadenaLogs) {
 
 /*******************  EVENTOS FILE SYSTEM API *********************************/
 
-function leerCanciones(){
+function leerCanciones() {
 
 
 }
@@ -330,7 +360,7 @@ function cargarCancion(file) {
         the_url = event.target.result;
         $("#tBodyCanciones").append("<tr><td><audio src='" + the_url + "' preload=auto controls></audio></td></tr>");
     }
-    
+
     reader.readAsDataURL(file);
 }
 

@@ -161,13 +161,15 @@ function leerBBDD() {
                 cursor.continue();
             } else {
                 console.log("fin del cursor");
-            }
-
+                console.log("tam: " + personas.length);
             $.each(personas, function() {
 
                 $("#tBodyPersonas").append('<tr><td>' + this.id + '</td><td>' + this.nombre.value + '</td><td>' + this.apellido.value + '</td><td>' + this.email.value + '</td></tr>');
 
             });
+            }
+
+
         };
 
 
@@ -194,6 +196,9 @@ function escribirBBDD(arrayPersona) {
         var db = open.result;
         var store = db.createObjectStore("PersonaStore", { keyPath: "id", autoIncrement: true });
         var index = store.createIndex("email", ["email"]);
+
+       
+
     };
 
     open.onsuccess = function() {
@@ -203,9 +208,32 @@ function escribirBBDD(arrayPersona) {
         var store = tx.objectStore("PersonaStore");
         var index = store.index("email");
 
-        // Add some data
-        store.put({ id: '', nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });
+       
+        var autoIncrement = store.autoIncrement;
+        console.log(autoIncrement);
+        if (autoIncrement){
+            store.put({ nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] });    
+        }
+        else{
 
+            /*
+            var myIndex = store.index('email');
+            var getAllKeyRequest = myIndex.getAllKeys();
+            getAllKeyRequest.onsuccess = function() {
+                console.log(getAllKeyRequest.result);
+                var tam = getAllKeyRequest.result.length;
+                store.put({id: tam,  nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] }); 
+            }
+            */
+            var tam = $("#tBodyPersonas > tr").length;
+            store.put({id: tam+1,  nombre: arrayPersona[0], apellido: arrayPersona[1], email: arrayPersona[2] }); 
+
+            
+            
+
+        }
+        
+        
         // Close the db when the transaction is done
         tx.oncomplete = function() {
             db.close();
